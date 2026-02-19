@@ -1,20 +1,9 @@
-/**
- * Entry service — business logic for managing content entries.
- *
- * Entries are the actual content records that belong to a collection.
- * Each entry stores its data as a JSON blob validated against the
- * parent collection's field definitions, plus a status (draft/published).
- */
-
 const { getDb } = require('../config/database');
 const { NotFoundError } = require('../utils/errors');
 const { validateEntryData } = require('./validationService');
 const { buildQuery } = require('../utils/queryBuilder');
 
-/**
- * Converts a raw database row into an entry object by parsing
- * the JSON-encoded "data" column into a real object.
- */
+
 function parseEntry(row) {
   if (!row) return null;
   return {
@@ -38,7 +27,6 @@ function parseEntry(row) {
 function getEntries(collection, query = {}) {
   const db = getDb();
 
-  // Extract filter.* query params into a plain object (e.g. { category: "tech" })
   const filters = {};
   for (const [key, value] of Object.entries(query)) {
     if (key.startsWith('filter.')) {
@@ -80,10 +68,7 @@ function getEntries(collection, query = {}) {
   };
 }
 
-/**
- * Fetches a single entry by ID, scoped to the given collection.
- * Throws NotFoundError if the entry doesn't exist or belongs to a different collection.
- */
+
 function getEntryById(collection, id) {
   const db = getDb();
   const row = db.prepare('SELECT * FROM entries WHERE id = ? AND collection_id = ?').get(id, collection.id);
@@ -91,12 +76,6 @@ function getEntryById(collection, id) {
   return parseEntry(row);
 }
 
-/**
- * Creates a new entry in the given collection.
- * Validates the data against the collection's field definitions,
- * defaults status to "draft" unless explicitly "published",
- * inserts the row, and returns the full new entry.
- */
 function createEntry(collection, { data, status }) {
   const db = getDb();
   const cleanedData = validateEntryData(collection.fields, data || {});
@@ -110,12 +89,7 @@ function createEntry(collection, { data, status }) {
   return getEntryById(collection, result.lastInsertRowid);
 }
 
-/**
- * Updates an existing entry. Only overwrites data/status if explicitly
- * provided — omitted fields keep their current values.
- * Re-validates data against the collection's field definitions if changed.
- * Returns the updated entry.
- */
+
 function updateEntry(collection, id, { data, status }) {
   const db = getDb();
   const existing = getEntryById(collection, id); // throws 404 if not found
@@ -131,10 +105,6 @@ function updateEntry(collection, id, { data, status }) {
   return getEntryById(collection, id);
 }
 
-/**
- * Deletes an entry by ID within a collection.
- * Verifies the entry exists first (throws 404 if not).
- */
 function deleteEntry(collection, id) {
   const db = getDb();
   getEntryById(collection, id); // throws if not found

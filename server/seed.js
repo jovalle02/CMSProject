@@ -14,8 +14,8 @@ const { getDb, initDatabase } = require('./src/config/database');
  * collections with field definitions, and inserts sample entries
  * (4 blog posts, 3 products).
  */
-async function seed() {
-  await initDatabase();
+function seed() {
+  initDatabase();
   const db = getDb();
 
   // Clear existing data (entries first to respect foreign key order)
@@ -257,7 +257,9 @@ Built with **aluminum housing** for durability and heat dissipation.`,
   console.log(`  - Created "Products" collection with ${3} published entries`);
 }
 
-seed().catch(err => {
+try {
+  seed();
+} catch (err) {
   console.error('Seed failed:', err);
   process.exit(1);
-});
+}

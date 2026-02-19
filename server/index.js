@@ -29,12 +29,8 @@ app.use('/api/content', contentRoutes);
 // Global error handler — must be registered last so it catches errors from all routes
 app.use(errorHandler);
 
-// Initialize the database (async because sql.js loads WASM), then start the server
-initDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`CMS server running on http://localhost:${PORT}`);
-  });
-}).catch(err => {
-  console.error('Failed to initialize database:', err);
-  process.exit(1);
+// Initialize the database (synchronous), then start the server
+initDatabase();
+app.listen(PORT, () => {
+  console.log(`CMS server running on http://localhost:${PORT}`);
 });
