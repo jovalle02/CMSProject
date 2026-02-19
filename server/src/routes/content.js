@@ -1,23 +1,9 @@
-/**
- * Content API routes — manages entries within collections.
- *
- * All routes are prefixed with /api/content (mounted in index.js).
- * Collections are identified by their URL-safe slug (e.g. "blog-posts").
- * Every route first resolves the collection via middleware, then delegates
- * to the entry service for CRUD operations.
- */
-
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('../middleware/asyncHandler');
 const collectionService = require('../services/collectionService');
 const entryService = require('../services/entryService');
 
-/**
- * Middleware: looks up the collection by its slug from the URL params
- * and attaches it to req.collection. Passes a 404 error to the error
- * handler if the slug doesn't match any collection.
- */
 function resolveCollection(req, res, next) {
   try {
     req.collection = collectionService.getCollectionBySlug(req.params.slug);

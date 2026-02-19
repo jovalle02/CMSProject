@@ -1,12 +1,3 @@
-/**
- * Admin API routes — manages collections (content type schemas).
- *
- * All routes are prefixed with /api/admin (mounted in index.js).
- * These endpoints let the admin create, read, update, and delete
- * collections, which define the structure (fields) that entries
- * must conform to.
- */
-
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('../middleware/asyncHandler');

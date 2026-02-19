@@ -1,27 +1,8 @@
-/**
- * Validation service — validates both collection field definitions
- * (the schema) and entry data (the content).
- *
- * Field definitions describe what fields a collection has and their types.
- * Entry data is the actual content submitted by users, which must conform
- * to the collection's field definitions.
- */
 
 const { ValidationError } = require('../utils/errors');
 
-// All supported field types for collection schemas
 const VALID_TYPES = ['string', 'text', 'number', 'boolean', 'select', 'date', 'markdown'];
 
-/**
- * Validates the field definitions array when creating or updating a collection.
- * Checks that:
- *   - fields is an array
- *   - Every field has a non-empty, unique name
- *   - Every field has a valid type from VALID_TYPES
- *   - "select" fields include a non-empty options array
- *
- * Collects all errors and throws a single ValidationError with details.
- */
 function validateFieldDefinitions(fields) {
   const errors = [];
 
@@ -55,24 +36,6 @@ function validateFieldDefinitions(fields) {
   }
 }
 
-/**
- * Validates entry data against a collection's field definitions.
- *
- * For each field defined in the collection:
- *   1. Checks required fields are present and non-empty
- *   2. Applies defaults for missing optional fields
- *   3. Validates the value against the field's type:
- *      - string:   must be a string, optionally enforces maxLength
- *      - text/markdown: must be a string (no length limit)
- *      - number:   must be numeric, optionally enforces min/max
- *      - boolean:  coerced via Boolean()
- *      - select:   must match one of the predefined options
- *      - date:     must be a parseable date string
- *
- * Returns a "cleaned" object containing only validated field values
- * (any extra keys not in the schema are stripped out).
- * Throws ValidationError with field-level details if any checks fail.
- */
 function validateEntryData(fields, data) {
   const errors = [];
   const cleaned = {}; // Only validated values make it into this object

@@ -12,18 +12,6 @@ function parseEntry(row) {
   };
 }
 
-/**
- * Lists entries for a collection with filtering, sorting, and pagination.
- *
- * Query params supported:
- *   - status        — filter by "draft" or "published"
- *   - filter.<field> — filter by a JSON field value (e.g. filter.category=tech)
- *   - sort          — sort column, prefix with "-" for descending (e.g. -created_at)
- *   - page          — page number (default 1)
- *   - per_page      — results per page (default 20, max 100)
- *
- * Returns { data: Entry[], pagination: { page, per_page, total, total_pages } }.
- */
 function getEntries(collection, query = {}) {
   const db = getDb();
 
